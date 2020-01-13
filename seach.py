@@ -12,12 +12,9 @@ class login(QWidget):
         with open("qss/login.qss",'r') as f:
             qApp.setStyleSheet(f.read())
         labelbg = QLabel(self)
-        labelbg.setObjectName('labelbg')
+        labelbg.setObjectName('labelbgs')
         labelbg.resize(531, 329)
-        #标题
         title = self.setWindowTitle('查询软件')
-        self.title = 'PyQt5 textbox'
-
         #隐藏边框
         self.setWindowFlags(Qt.FramelessWindowHint)
         # 左侧图片s
@@ -51,11 +48,14 @@ class login(QWidget):
         btnBig.setText('最大化')
         #账号
         self.textbox = QLineEdit(self)
-        self.textbox.move(300, 140)
+        self.textbox.move(290, 140)
         self.textbox.resize(220, 40)
         self.textbox.setObjectName('userInput')
         self.textbox.setFont(QFont("Microsoft YaHei" , 18, 75))
+        #标题
+        self.h1 = labelbg.setText('213213')
         self.show()
+
     #可拖动边框窗口
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
