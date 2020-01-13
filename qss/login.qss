@@ -26,6 +26,10 @@ QLineEdit#userInput {
      background-color:rgb(39,93,93);
      border-radius:5;
 }
-setText#titleH1 {
+QLabel#texth {
+    color:#fffff;
+}
+QPushButton#btnLogin {
     color:#ffffff;
+    background-color:rgb(39,93,93);
 }
