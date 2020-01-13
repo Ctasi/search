@@ -14,11 +14,13 @@ class login(QWidget):
         labelbg = QLabel(self)
         labelbg.setObjectName('labelbg')
         labelbg.resize(531, 329)
-        labelbg.setWindowTitle("查询软件")
+        #标题
+        title = self.setWindowTitle('查询软件')
+        self.title = 'PyQt5 textbox'
 
         #隐藏边框
         self.setWindowFlags(Qt.FramelessWindowHint)
-        # 左侧图片
+        # 左侧图片s
         pix = QPixmap('img.jpg')
         label = QLabel(self)
         label.setGeometry(0, 0, 260, 329)
@@ -47,6 +49,12 @@ class login(QWidget):
         btnBig.setCursor(QCursor(Qt.PointingHandCursor))
         btnBig.clicked.connect(self.showMaximized)
         btnBig.setText('最大化')
+        #账号
+        self.textbox = QLineEdit(self)
+        self.textbox.move(300, 140)
+        self.textbox.resize(220, 40)
+        self.textbox.setObjectName('userInput')
+        self.textbox.setFont(QFont("Microsoft YaHei" , 18, 75))
         self.show()
     #可拖动边框窗口
     def mousePressEvent(self, event):
