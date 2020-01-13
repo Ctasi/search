@@ -4,6 +4,8 @@ import sys
 import json
 import requests
 
+tparms = {'username': '', 'password': '', 'count': 0, 'update_url': 'http://{}/admin/api/saveKeyword', 'code': '', 'company': '', 'filedir': '', 'news_list': [], 'admin_id': ''}
+
 class login(QWidget):
 
     def __init__(self):
@@ -80,11 +82,40 @@ class login(QWidget):
         try:
             res = requests.post(url=baseurl, data=data, timeout=3)
         except Exception as e:
-            #QtGui.QMessageBox.critical(self, u'错误', u'用户名或密码错误')
+            # self.QMessageBox.critical(self, u'错误', u'用户名或密码错误')
+            reply = QMessageBox.information(self,
+                                            "提示",
+                                            "用户名或密码错误",
+                                            QMessageBox.Yes)
             return
 
         if res.status_code == 200:
-            #QtGui.QMessageBox.critical(self, u'错误', u'用户名或密码错误')
+            content = json.loads(res.content)
+            if content['status'] == 1:
+                tparms['username'] = username
+                # tparms['password'] = password
+                tparms['admin_id'] = content['data']['admin_id']
+                tparms['company'] = content['data']['company']
+                tparms['code'] = content['data']['code']
+                tparms['update_url'] = 'http://api.yzt-tools.com/api/wtx/report/saveKeyword'
+                try:
+                    news_list = []
+                    yuming_url = 'http://tidan.yzt-tools.com/admin/api/getMuluUrl'
+                    res = json.loads(requests.get(yuming_url, data={"type": 1}).content)['data']
+                    for i in res:
+                        if 'http' in i:
+                            i = i.replace('http://', '').replace('www', '').replace('https://', '')
+                        news_list.append(i)
+                    tparms['news_list'] = list(set(news_list))
+                except:
+                    tparms['news_list'] = []
+                print(tparms)
+            else :
+                reply = QMessageBox.information(self,
+                                                "提示",
+                                                "用户名或密码错误",
+                                                QMessageBox.Yes)
+            return
 
     #可拖动边框窗口
     def mousePressEvent(self, event):
