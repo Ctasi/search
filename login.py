@@ -1,8 +1,12 @@
 from PyQt5.Qt import *
 from PyQt5 import QtGui
+import random
+import win32gui
+import win32api,win32con
 import sys
 import json
 import requests
+import setTask
 
 tparms = {'username': '', 'password': '', 'count': 0, 'update_url': 'http://{}/admin/api/saveKeyword', 'code': '', 'company': '', 'filedir': '', 'news_list': [], 'admin_id': ''}
 
@@ -14,7 +18,7 @@ class login(QWidget):
         self.setup_ui()
     # UI界面方法
     def setup_ui(self):
-        with open("qss/login.qss",'r') as f:
+        with open("login.qss",'r') as f:
             qApp.setStyleSheet(f.read())
         labelbg = QLabel(self)
         labelbg.setObjectName('labelbgs')
@@ -39,18 +43,18 @@ class login(QWidget):
         btnMinimum = QPushButton(self)
         btnMinimum.setObjectName('Minimum')
         btnMinimum.resize(50,20)
-        btnMinimum.move(380,0)
+        btnMinimum.move(430,0)
         btnMinimum.setCursor(QCursor(Qt.PointingHandCursor))
         btnMinimum.clicked.connect(self.showMinimized)
         btnMinimum.setText('最小化')
-        #最大化
-        btnBig = QPushButton(self)
-        btnBig.setObjectName('big')
-        btnBig.resize(50,20)
-        btnBig.move(430,0)
-        btnBig.setCursor(QCursor(Qt.PointingHandCursor))
-        btnBig.clicked.connect(self.showMaximized)
-        btnBig.setText('最大化')
+        # #最大化
+        # btnBig = QPushButton(self)
+        # btnBig.setObjectName('big')
+        # btnBig.resize(50,20)
+        # btnBig.move(430,0)
+        # btnBig.setCursor(QCursor(Qt.PointingHandCursor))
+        # btnBig.clicked.connect(self.showMaximized)
+        # btnBig.setText('最大化')
         #账号
         self.textbox = QLineEdit(self)
         self.textbox.move(290, 160)
@@ -69,6 +73,7 @@ class login(QWidget):
         btnLogin.setObjectName('btnLogin')
         btnLogin.resize(100,40)
         btnLogin.move(290,220)
+        btnLogin.setStyleSheet("QPushButton:hover{border-image: url(bg.jpg)}")
         btnLogin.setCursor(QCursor(Qt.PointingHandCursor))
         btnLogin.setText('登录')
         btnLogin.clicked.connect(self.login_in)
@@ -109,8 +114,14 @@ class login(QWidget):
                     tparms['news_list'] = list(set(news_list))
                 except:
                     tparms['news_list'] = []
-                print(tparms)
+                self.check_file()
+                QMessageBox.information(self,
+                                        "提示",
+                                        "登录成功",
+                                        QMessageBox.Yes)
+                self.accept()
             else :
+
                 reply = QMessageBox.information(self,
                                                 "提示",
                                                 "用户名或密码错误",
