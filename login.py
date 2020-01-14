@@ -114,12 +114,11 @@ class login(QWidget):
                     tparms['news_list'] = list(set(news_list))
                 except:
                     tparms['news_list'] = []
-                self.check_file()
                 QMessageBox.information(self,
                                         "提示",
                                         "登录成功",
                                         QMessageBox.Yes)
-                self.accept()
+                self.close()
             else :
 
                 reply = QMessageBox.information(self,
