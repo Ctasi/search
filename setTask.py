@@ -6,6 +6,7 @@ import win32api,win32con
 import sys
 import json
 import requests
+import os
 
 class setTask(QWidget):
 
@@ -13,6 +14,15 @@ class setTask(QWidget):
 
         super().__init__()
         self.setup_ui()
+
+    def check_file(self):
+        if not os.path.exists('hydata'):
+            os.makedirs('hydata')
+        filename = 'hydata/{}'.format(self.filename)
+        if not os.path.exists(filename):
+            os.makedirs(filename)
+        tparms['filedir'] = filename
+
     def setup_ui(self):
         with open("login.qss",'r') as f:
             qApp.setStyleSheet(f.read())
@@ -47,7 +57,7 @@ class setTask(QWidget):
         autoKeywords.resize(150,150)
         autoKeywords.move(70,100)
         autoKeywords.setCursor(QCursor(Qt.PointingHandCursor))
-        autoKeywords.clicked.connect(self.autoKeywordWin)
+        autoKeywords.clicked.connect(self.autoUi)
         autoKeywords.setText('自动检测关键词')
 
         #手动导入关键词
@@ -57,19 +67,37 @@ class setTask(QWidget):
         manualKeywords.resize(150,150)
         manualKeywords.move(300,100)
         manualKeywords.setCursor(QCursor(Qt.PointingHandCursor))
-        manualKeywords.clicked.connect(self.showMinimized)
+        # manualKeywords.clicked.connect(self.showMinimized)
         manualKeywords.setText('手动导入关键词')
 
         self.show()
 
-    def autoKeywordWin(self):
-        labelauto = QLabel(self)
+
+    def autoUi(self):
+        labelauto = QWidget()
+        # labelauto.setParent(self.labelbg)
         labelauto.setWindowTitle('sss')
+        labelauto.resize(800,300)
         labelauto.setObjectName('labelbgs')
-        self.show()
+        labelauto.show()
+        print(1)
+
+    #可拖动边框窗口
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.m_drag = True
+            self.m_DragPosition = event.globalPos() - self.pos()
+            event.accept()
+    def mouseMoveEvent(self, QMouseEvent):
+        if QMouseEvent.buttons() and Qt.LeftButton:
+            self.move(QMouseEvent.globalPos() - self.m_DragPosition)
+            QMouseEvent.accept()
+    def mouseReleaseEvent(self, QMouseEvent):
+        self.m_drag = False
 
 if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     ex = setTask()
+    ex.autoUi()
     sys.exit(app.exec())
