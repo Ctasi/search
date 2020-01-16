@@ -33,3 +33,7 @@ QPushButton#btnLogin {
     color:#ffffff;
     background-color:rgb(39,93,93);
 }
+
+QLabel#setAuto_textMax {
+    color:#ffffff;
+}

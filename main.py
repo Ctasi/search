@@ -84,56 +84,61 @@ class login(QWidget):
         self.btnLogin.setCursor(QCursor(Qt.PointingHandCursor))
         self.btnLogin.setText('登录')
         self.btnLogin.clicked.connect(self.login_in)
-        self.show()
 
     def login_in(self):
-        username = self.textbox.text()
+        username = str(self.textbox.text())
         # password = str(self.lineEdit_passwd.text())
         baseurl = 'http://{}/admin/api/adminloginIn'
-        data = {'username': str(username)}
         try:
-            res = requests.post(url=baseurl.format(username), data=data, timeout=3)
-        except Exception as e:
-            # self.QMessageBox.critical(self, u'错误', u'用户名或密码错误')
+            res = requests.post(url=baseurl.format(username), timeout=3)
+        except:
             reply = QMessageBox.information(self,
                                             "提示",
                                             "用户名或密码错误",
                                             QMessageBox.Yes)
-            return False
-
+            return
         if res.status_code == 200:
             content = json.loads(res.content)
             if content['status'] == 1:
+                if username.startswith('www'):
+                    username = username[4:]
                 tparms['username'] = username
                 # tparms['password'] = password
-                tparms['admin_id'] = content['data']['admin_id']
                 tparms['company'] = content['data']['company']
                 tparms['code'] = content['data']['code']
-                tparms['update_url'] = 'http://api.yzt-tools.com/api/wtx/report/saveKeyword'
+                tparms['update_url'] = tparms['update_url'].format(username)
                 try:
                     news_list = []
                     yuming_url = 'http://tidan.yzt-tools.com/admin/api/getMuluUrl'
-                    res = json.loads(requests.get(yuming_url, data={"type": 1}).content)['data']
+                    res = json.loads(requests.post(yuming_url, data={"type": 2}).content)['data']
                     for i in res:
                         if 'http' in i:
                             i = i.replace('http://', '').replace('www', '').replace('https://', '')
                         news_list.append(i)
                     tparms['news_list'] = list(set(news_list))
+                    reply = QMessageBox.information(self,
+                                                    "提示",
+                                                    "登录成功",
+                                                    QMessageBox.Yes)
+                    keyword.show()
+                    self.close()
                 except:
                     tparms['news_list'] = []
-                    self.keyword = setTask()
-                    self.keyword.show()
-                # QMessageBox.information(self,
-                #                         "提示",
-                #                         "登录成功",
-                #                         QMessageBox.Yes)
-            else :
-
+                    reply = QMessageBox.information(self,
+                                                    "提示",
+                                                    "用户名或密码错误",
+                                                    QMessageBox.Yes)
+            else:
                 reply = QMessageBox.information(self,
                                                 "提示",
                                                 "用户名或密码错误",
                                                 QMessageBox.Yes)
-            return
+        else:
+            reply = QMessageBox.information(self,
+                                            "提示",
+                                            "用户名或密码错误",
+                                            QMessageBox.Yes)
+
 
     #可拖动边框窗口
     def mousePressEvent(self, event):
@@ -151,5 +156,9 @@ class login(QWidget):
 if __name__ == '__main__':
         app = QApplication(sys.argv)
         ex = login()
-        # setKeywords.show()
+        ex.show()
+        #关键词导入
+        auto = autoUi()
+        keyword = setTask()
+        keyword.autoKeywords.clicked.connect(auto.show)
         sys.exit(app.exec())

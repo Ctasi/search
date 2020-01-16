@@ -8,22 +8,49 @@ import json
 import requests
 import os
 
+
+
+class autoUi(QWidget):
+
+    def __init__(self):
+        super(autoUi, self).__init__()
+        with open("login.qss","r") as f:
+            qApp.setStyleSheet(f.read())
+        self.labelauto = QLabel(self)
+        self.labelauto.setObjectName('labelbgs')
+        self.labelauto.setWindowTitle('sss')
+        self.labelauto.setFixedSize(397,297)
+        self.labelauto.setObjectName('labelbgs')
+        self.labelauto.resize(381, 251)
+        #设置词数上限
+        self.keywordMax = QLineEdit(self)
+        self.keywordMax.setPlaceholderText('1000000')
+        self.keywordMax.setObjectName('userInput')
+        self.keywordMax.setFont(QFont('Microsoft YaHei' , 18 , 75))
+        self.keywordMax.move(138,95)
+        #标题
+        self.textMax = QLabel(self)
+        self.textMax.setFont(QFont('Microsoft YaHei' , 18,75))
+        self.textMax.move(10,95)
+        self.textMax.setText("设置上限")
+        self.textMax.setObjectName('setAuto_textMax')
+        #检测词数
+        self.keywordTest = QLineEdit(self)
+        self.keywordTest.setEnabled(False)
+        self.keywordTest.setObjectName('userInput')
+        self.keywordTest.setFont(QFont('Microsoft YaHei',18,75))
+        self.keywordTest.move(138,160)
+        #标题检测
+        self.testIng = QLabel(self)
+        self.testIng.setFont(QFont('Microsoft YaHei' , 18,75))
+        self.testIng.move(10,160)
+        self.testIng.setText("检测词数")
+        self.testIng.setObjectName('setAuto_textMax')
 class setTask(QWidget):
 
     def __init__(self):
 
-        super().__init__()
-        self.setup_ui()
-
-    def check_file(self):
-        if not os.path.exists('hydata'):
-            os.makedirs('hydata')
-        filename = 'hydata/{}'.format(self.filename)
-        if not os.path.exists(filename):
-            os.makedirs(filename)
-        tparms['filedir'] = filename
-
-    def setup_ui(self):
+        super(setTask, self).__init__()
         with open("login.qss",'r') as f:
             qApp.setStyleSheet(f.read())
         labelbg = QLabel(self)
@@ -51,14 +78,15 @@ class setTask(QWidget):
         btnMinimum.setText('最小化')
 
         #自动检测关键词
-        autoKeywords = QPushButton(self)
-        autoKeywords.setObjectName('Minimum')
-        autoKeywords.setFont(QFont("Microsoft YaHei" , 15, 75))
-        autoKeywords.resize(150,150)
-        autoKeywords.move(70,100)
-        autoKeywords.setCursor(QCursor(Qt.PointingHandCursor))
-        autoKeywords.clicked.connect(self.autoUi)
-        autoKeywords.setText('自动检测关键词')
+        self.autoKeywords = QPushButton(self)
+        self.autoKeywords.setObjectName('Minimum')
+        self.autoKeywords.setFont(QFont("Microsoft YaHei" , 15, 75))
+        self.autoKeywords.resize(150,150)
+        self.autoKeywords.move(70,100)
+        self.autoKeywords.setCursor(QCursor(Qt.PointingHandCursor))
+        # a = autoUi()
+        # autoKeywords.clicked.connect(a.show())
+        self.autoKeywords.setText('自动检测关键词')
 
         #手动导入关键词
         manualKeywords = QPushButton(self)
@@ -70,17 +98,8 @@ class setTask(QWidget):
         # manualKeywords.clicked.connect(self.showMinimized)
         manualKeywords.setText('手动导入关键词')
 
-        self.show()
+class web_keywords(QWidget):
 
-
-    def autoUi(self):
-        labelauto = QWidget()
-        # labelauto.setParent(self.labelbg)
-        labelauto.setWindowTitle('sss')
-        labelauto.resize(800,300)
-        labelauto.setObjectName('labelbgs')
-        labelauto.show()
-        print(1)
 
     #可拖动边框窗口
     def mousePressEvent(self, event):
@@ -99,5 +118,7 @@ if __name__ == '__main__':
 
     app = QApplication(sys.argv)
     ex = setTask()
-    ex.autoUi()
+    ex.show()
+    auto = autoUi()
+    ex.autoKeywords.clicked.connect(auto.show)
     sys.exit(app.exec())
